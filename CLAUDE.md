@@ -80,6 +80,26 @@ before choosing one. The plan, with the decisions and their defaults, is `PLAN.m
   (stats only: OX Play has no scores), and the brand color (`BRAND_COLOR`, purple) as `AppSettings`' default.
 - `:app/di/UseCaseModule` assembles the use cases.
 
+### `:feature:game`
+
+- **`GameViewModel`** (one `StateFlow<GameUiState>`, sealed `GameIntent`: Place, Undo, Redo, Hint, NewGame):
+  resumes the saved game or starts one; a Settings mode change (collected, first value dropped) starts a game in it.
+  After any placement it announces it, plays `FeedbackEvent.MOVE`, then finishes (stats, clear save, `WIN` sound
+  when the player or either 2-player side won) or saves, and lets the AI answer after a 400 ms pause on the injected
+  `@AiDispatcher`; taps wait meanwhile (`canPlay`). Undo and redo cancel a pending answer or hint search; undo works
+  while the AI thinks. Hint: first tap shows hard's move for the side to move, second tap plays it.
+- **Screen:** vinkit `GameSurface` + `GameFrame`. Info = mode ("4×4 · Hard") over whose turn it is ("Your turn",
+  "Thinking…", "X's turn") or the result, one TalkBack item. Toolbar: undo, redo, hint (a check while a hint shows);
+  menu: new game. The end dialog (vinkit `WinDialog`) waits 900 ms so the winning line is seen struck; the player's win
+  (or any 2-player win) gets a celebration, a loss or draw doesn't.
+- **Board (`XoBoard`):** one `Canvas`: grid in `outlineVariant`, X in `primary` (two strokes), O in `tertiary` (a
+  circle sweep), each drawn in over 250 ms, the hint cell in `tertiaryContainer`, the winning line struck in the
+  winner's color. `BoardGeometry` (pure) maps taps to cells. One invisible TalkBack node per cell, row by row ("row
+  2, column 3, X" / "empty" / ", suggested"), with a click only on empty cells while the player may play.
+  `MarkColorsTest` keeps X and O at ≥ 3:1 against the surface in every palette, light and dark.
+- `:app/di/GameModule` provides vinkit's `AndroidGameFeedback` (singleton) and `@AiDispatcher` = `Dispatchers.Default`.
+  Until milestone 6, `MainActivity` shows the game alone.
+
 ### Pitest
 
 - Suspend functions leave coroutine bookkeeping mutants nothing can kill, so use cases weigh on the score: it sits
