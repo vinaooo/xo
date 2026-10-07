@@ -113,12 +113,20 @@ before choosing one. The plan, with the decisions and their defaults, is `PLAN.m
   subclasses vinkit's `ScoresViewModel` with the 9 AI mode keys in board-then-opponent order and an empty
   `ScoreRepository` (OX Play has no scores).
 - **Bug report:** `GameSurface` with `REPORT_TARGET` (`vrpedrinho+xo@gmail.com`, user's choice, or an issue on
-  `vinaooo/xo`); `gameReport` adds a settings line, a game line, the `GameCodec` state and `game.json`. No
-  `DebugGameActivity` yet to replay a "State:" block (release prep).
+  `vinaooo/xo`); `gameReport` adds a settings line, a game line, the `GameCodec` state and `game.json`.
+- **`DebugGameActivity`** (debug builds): `adb shell am start -S -n io.github.vinaooo.xo/.debug.DebugGameActivity
+  --es game near_win|near_loss|five_full`, or `--es state <code>` (a report's "State:" block), or `--es load
+  game.json` (pushed to `/sdcard/Android/data/io.github.vinaooo.xo/files/`).
 - `:app`: `OxPlayApp` (type-safe NavHost: game, Scores, Settings; the banner only under the game, which consumes the
   navigation-bar inset), `di/GameModule` (vinkit's `AndroidGameFeedback`, `@AiDispatcher` = `Dispatchers.Default`),
-  `di/AdsModule` (vinkit's `PlaceholderAdBanner` until the AdMob app exists; then `AdMobBanner` + consent and
-  Settings' privacy options). `AdBannerGameScreenOnlyTest` runs the real app under Hilt.
+  `di/AdsModule` (vinkit's `AdMobBanner` and `DefaultAdConsent`, IDs from `BuildConfig`: Google's test IDs in debug
+  and until real ones are in `local.properties`; debug builds simulate the EEA). `MainActivity` gathers consent once
+  per launch; Settings shows "Privacy options" when UMP requires it. App tests replace `AdsModule` with
+  `FakeAdsModule` (`src/sharedTest`); `AdBannerGameScreenOnlyTest` runs the real app under Hilt (banner on the game
+  only, consent gathered once).
+- **Ads on devices:** the user's phone has no Google Play services: no ads, no consent form there. Check them on
+  `Pixel_9a_Android_16` (checked: EEA test form, test banner, Settings → Privacy options). Its airplane mode was left
+  on from Sudoku's store screenshots: `cmd connectivity airplane-mode disable` on the emulator.
 
 ### Pitest
 
@@ -136,6 +144,16 @@ before choosing one. The plan, with the decisions and their defaults, is `PLAN.m
   right, and pt-BR, with dynamic color off (brand purple) and the clock held so the end dialog isn't up yet.
 - Checked on the `Pixel_Tablet_Android_16` emulator: landscape layout, the 320dp ad slot, Settings in two columns,
   phone view (board, toolbar under it, on the chosen side) and the whole UI in pt-BR (`cmd locale set-app-locales`).
+
+## Release
+
+- **Audience:** 13 and older (user's choice): not in Google Play's Families program; the listing must not market to
+  children.
+- **Privacy policy:** `xo/privacy.html` in the public `vinaooo.github.io` repo (default branch `main`, Pages serves
+  `master`: push the same commit to both, check with `curl`, force a rebuild with `gh api -X POST
+  repos/vinaooo/vinaooo.github.io/pages/builds`). It lists the release build's real permissions (internet, network
+  state, vibration, AD_ID, the ad services ones, wake lock, foreground service): update it when they change.
+- `release.yml`: off until `PLAY_UPLOAD_ENABLED`; secrets in the README.
 
 ## Device testing
 

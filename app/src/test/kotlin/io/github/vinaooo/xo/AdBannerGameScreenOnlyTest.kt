@@ -9,6 +9,8 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
 import io.github.vinaooo.vinkit.ads.AdBannerProvider
+import io.kotest.matchers.shouldBe
+import javax.inject.Inject
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.RuleChain
@@ -41,5 +43,14 @@ class AdBannerGameScreenOnlyTest {
         compose.onNodeWithContentDescription("Settings").performClick()
         compose.onNodeWithText("Opponent").assertExists()
         compose.onNodeWithTag(AdBannerProvider.TEST_TAG).assertDoesNotExist()
+    }
+
+    @Inject lateinit var consent: FakeAdConsent
+
+    @Test
+    fun `consent is gathered once when the app starts`() {
+        hilt.inject()
+
+        consent.gathered shouldBe 1
     }
 }
