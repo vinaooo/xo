@@ -45,6 +45,19 @@ object MinimaxAi : Ai {
         return safe.filter { potential.getValue(it) == top }.random(random)
     }
 
+    /**
+     * How many positions hard visits to answer [state]: its cost, the same on every machine (a time limit isn't: CI's
+     * runners are slower than a phone). 0 for an obvious move.
+     */
+    internal fun searchCost(state: GameState): Int {
+        val board = state.board
+        val me = state.toMove
+        if (obviousMove(board, me, Random(0)) != null) return 0
+        val search = Search(board.size, depthFor(board))
+        orderedMoves(board, me).forEach { search.negamax(board.place(it, me), me.other, 1, -WIN, WIN) }
+        return search.visited
+    }
+
     /** [board]'s value for [toMove] as the search sees it: a win sooner is worth more, a draw 0. */
     internal fun value(board: Board, toMove: Mark): Int =
         Search(board.size, depthFor(board)).negamax(board, toMove, 0, -WIN, WIN)
@@ -63,8 +76,13 @@ object MinimaxAi : Ai {
     private class Search(private val size: BoardSize, private val maxDepth: Int) {
         private val seen = HashMap<String, Int>()
 
+        /** Positions looked at so far. */
+        var visited = 0
+            private set
+
         /** The value of [board] for [toMove], [depth] moves below the root. Faster wins score higher. */
         fun negamax(board: Board, toMove: Mark, depth: Int, alphaIn: Int, beta: Int): Int {
+            visited++
             leafValue(board, toMove, depth)?.let { return it }
             val key = "${board.cells.joinToString("") { it?.name ?: "." }}$toMove$depth"
             seen[key]?.let { return it }
