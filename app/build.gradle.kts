@@ -1,4 +1,5 @@
 plugins {
+    alias(libs.plugins.roborazzi)
     alias(libs.plugins.vinkit.android.application)
     alias(libs.plugins.vinkit.android.compose)
     alias(libs.plugins.vinkit.hilt)
@@ -43,4 +44,8 @@ dependencies {
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.hilt.android.testing)
     kspTest(libs.hilt.compiler)
+
+    testImplementation(libs.roborazzi)
+    testImplementation(libs.roborazzi.compose)
+    testImplementation(libs.roborazzi.junit.rule)
 }
