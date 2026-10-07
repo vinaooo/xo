@@ -40,3 +40,4 @@ dependencyResolutionManagement {
 rootProject.name = "OXPlay"
 
 include(":app")
+include(":domain")
