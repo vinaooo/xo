@@ -63,7 +63,9 @@ before choosing one. The plan, with the decisions and their defaults, is `PLAN.m
     search took ~650 ms on the user's Moto (XT2125, release build compiled `speed-profile`) only to pick a center.
   - Measured on that phone (release, `speed-profile`): slowest hard move 420 ms on 4×4 and 396 ms on 5×5, the first
     searched moves; later moves under 250 ms. The ViewModel thinks during its 400 ms pause, so that's the wait.
-  - Measured (JVM): slowest hard move 191 ms on 4×4, 61 ms on 5×5. Against easy over 30 games: 28/30 wins on 3×3,
+  - Tests never time the AI: CI's runners are slower than a phone, and a 300 ms limit failed every CI run from
+    milestone 3 to 7. `AiStrengthTest` caps the positions hard visits per answer instead (`MinimaxAi.searchCost`:
+    80,000 on 4×4, 35,000 on 5×5, just above today's search); speed is measured on the phone. Against easy over 30 games: 28/30 wins on 3×3,
     29/30 on 4×4, 30/30 on 5×5, never a loss.
 - **Use cases:** `StartNewGame(mode?)` (Settings' mode by default; the opener alternates through
   `GameSettings.nextFirstMover`; an AI game in progress that it replaces counts as a loss; 2-player games are never
