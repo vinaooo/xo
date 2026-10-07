@@ -173,6 +173,24 @@ class AiTest {
     }
 
     @Test
+    fun `answering the opening on the bigger boards, hard takes a free center cell without searching`() {
+        // The player took a center cell on 4×4: hard takes another one.
+        val four = start(BoardSize.FOUR).place(5)
+        repeat(10) { MinimaxAi.move(four, Random(it)) shouldBeIn listOf(6, 9, 10) }
+        // A corner on 5×5: hard takes the middle.
+        MinimaxAi.move(start(BoardSize.FIVE).place(0), Random(0)) shouldBe 12
+        MinimaxAi.obviousMove(four.board, Mark.O, Random(0)) shouldBeIn listOf(6, 9, 10)
+        MinimaxAi.obviousMove(start(BoardSize.FIVE).board, Mark.X, Random(0)) shouldBe 12
+        // The middle taken on 5×5: no free center cell, so it searches.
+        MinimaxAi.obviousMove(start(BoardSize.FIVE).place(12).board, Mark.O, Random(0)).shouldBeNull()
+        // Past the opening, or on 3×3, nothing is obvious without a threat.
+        MinimaxAi.obviousMove(start(BoardSize.FOUR).place(5, 0).board, Mark.X, Random(0)).shouldBeNull()
+        MinimaxAi.obviousMove(start(BoardSize.THREE).board, Mark.X, Random(0)).shouldBeNull()
+        // Two threats: no single block to make, so it searches.
+        MinimaxAi.obviousMove(start(BoardSize.THREE).place(0, 4, 2, 6, 8).board, Mark.O, Random(0)).shouldBeNull()
+    }
+
+    @Test
     fun `winning cells and open lines agree with a plain count on random positions`() {
         val random = Random(1)
         repeat(POSITIONS) {

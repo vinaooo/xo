@@ -13,13 +13,25 @@ import kotlin.random.Random
  * provably perfect. Among equally good moves it picks at random, so games vary.
  */
 object MinimaxAi : Ai {
-    override fun move(state: GameState, random: Random): Int {
-        val board = state.board
-        val me = state.toMove
-        // A win now, or the only block, needs no search.
+    override fun move(state: GameState, random: Random): Int =
+        obviousMove(state.board, state.toMove, random) ?: searchedMove(state.board, state.toMove, random)
+
+    /**
+     * A win now, or the only block, needs no search; nor does the opening on the bigger boards, where the widest
+     * search (~650 ms on a phone) would only pick a center cell.
+     */
+    internal fun obviousMove(board: Board, me: Mark, random: Random): Int? {
         winningCells(board, me).firstOrNull()?.let { return it }
         val threats = winningCells(board, me.other)
-        if (threats.size == 1) return threats.single()
+        return when {
+            threats.size == 1 -> threats.single()
+            board.size != BoardSize.THREE && board.cells.count { it != null } <= OPENING_MARKS ->
+                centerCells(board).filter { board[it] == null }.randomOrNull(random)
+            else -> null
+        }
+    }
+
+    private fun searchedMove(board: Board, me: Mark, random: Random): Int {
         val search = Search(board.size, depthFor(board))
         val scored = orderedMoves(board, me).map { cell ->
             cell to -search.negamax(board.place(cell, me), me.other, 1, -WIN, WIN)
@@ -94,6 +106,7 @@ object MinimaxAi : Ai {
     }
 
     internal const val WIN = 1_000_000
+    private const val OPENING_MARKS = 1
     private const val FOUR_DEPTH = 6
     private const val FIVE_DEPTH = 4
     private const val DEEP_ENDGAME = 9

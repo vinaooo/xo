@@ -11,18 +11,20 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.vinaooo.vinkit.ads.AdBannerProvider
 import io.github.vinaooo.vinkit.core.AppSettings
 import io.github.vinaooo.vinkit.core.AppSettingsRepository
 import io.github.vinaooo.vinkit.designsystem.VinkitTheme
 import io.github.vinaooo.vinkit.designsystem.isDarkTheme
 import io.github.vinaooo.xo.data.BRAND_COLOR
-import io.github.vinaooo.xo.feature.game.ui.GameRoute
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     @Inject lateinit var appSettings: AppSettingsRepository
+
+    @Inject lateinit var adBanner: AdBannerProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -35,10 +37,7 @@ class MainActivity : ComponentActivity() {
                 val barStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT) { darkTheme }
                 enableEdgeToEdge(statusBarStyle = barStyle, navigationBarStyle = barStyle)
             }
-            VinkitTheme(settings.themeColor, settings.themeMode, settings.dynamicColor) {
-                // ponytail: the game alone until milestone 6 adds navigation, Scores, Settings and the ad banner.
-                GameRoute()
-            }
+            VinkitTheme(settings.themeColor, settings.themeMode, settings.dynamicColor) { OxPlayApp(adBanner) }
         }
     }
 }

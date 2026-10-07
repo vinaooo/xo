@@ -29,6 +29,8 @@ pitest {
     excludedClasses.set(listOf("*\$\$serializer"))
     // Whole games, slow under every mutant; AiTest covers the same code with exact checks.
     excludedTestClasses.set(listOf("io.github.vinaooo.xo.domain.AiStrengthTest"))
+    // Suspend functions call ResultKt.throwOnFailure in compiler-generated code no test can observe.
+    avoidCallsTo.set(listOf("kotlin.ResultKt"))
     timeoutConstInMillis.set(10_000)
     threads.set(2)
     jvmArgs.set(listOf("-Xmx512m"))
