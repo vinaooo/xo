@@ -21,6 +21,11 @@ android {
         }
     }
 
+    // FakeAdsModule keeps the real ads SDKs out of both Robolectric and on-device tests.
+    sourceSets {
+        getByName("test").kotlin.directories += "src/sharedTest/kotlin"
+    }
+
     androidResources {
         localeFilters += listOf("en", "pt-rBR")
     }

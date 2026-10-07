@@ -33,7 +33,12 @@ data object SettingsDestination
 
 /** The navigation host. Only the game screen carries the ad banner, at its bottom; Scores and Settings have none. */
 @Composable
-fun OxPlayApp(adBanner: AdBannerProvider, modifier: Modifier = Modifier) {
+fun OxPlayApp(
+    adBanner: AdBannerProvider,
+    modifier: Modifier = Modifier,
+    privacyOptionsRequired: Boolean = false,
+    onOpenPrivacyOptions: () -> Unit = {},
+) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -54,6 +59,12 @@ fun OxPlayApp(adBanner: AdBannerProvider, modifier: Modifier = Modifier) {
             }
         }
         composable<ScoresDestination> { ScoresRoute(onBack = navController::popBackStack) }
-        composable<SettingsDestination> { SettingsRoute(onBack = navController::popBackStack) }
+        composable<SettingsDestination> {
+            SettingsRoute(
+                onBack = navController::popBackStack,
+                privacyOptionsRequired = privacyOptionsRequired,
+                onOpenPrivacyOptions = onOpenPrivacyOptions,
+            )
+        }
     }
 }
