@@ -60,11 +60,30 @@ before choosing one. The plan, with the decisions and their defaults, is `PLAN.m
     Moves are searched wins first, then blocks, then by open lines (`orderedMoves`).
   - Measured (JVM): slowest hard move 191 ms on 4×4, 61 ms on 5×5. Against easy over 30 games: 28/30 wins on 3×3,
     29/30 on 4×4, 30/30 on 5×5, never a loss.
+- **Use cases:** `StartNewGame(mode?)` (Settings' mode by default; the opener alternates through
+  `GameSettings.nextFirstMover`; an AI game in progress that it replaces counts as a loss; 2-player games are never
+  recorded), `ResumeGame`, `SaveGame`, `FinishGame` (the player's win / loss / draw into vinkit's stats under
+  `GameMode.key`, then clears the save). Repositories: `SavedGameRepository`, `GameSettingsRepository`, `SeedSource`,
+  and vinkit's `StatsRepository`; fakes in `testFixtures`.
 - **Tests:** `AiStrengthTest` plays whole games (never loses on 3×3 against every possible reply, beats easy, timing);
   it's slow, so Pitest leaves it out, and `AiTest` pins the same code with exact checks (search value = plain negamax
   on every 3×3 position, best-value moves, ordering, evaluation against a plain count).
 - **Tests:** property tests over random legal games on every mode (board valid, `legalMoves` agrees with `isLegal`,
   undo all + redo all comes back).
+
+### `:data`
+
+- `FileSavedGameRepository` (`files/saved_game.json`, a `{version, session}` envelope, temp file + rename; corrupt,
+  invalid or unknown-version files are discarded), `DataStoreGameSettingsRepository` (`board_size`, `opponent`,
+  `next_first_mover`) in the same Preferences DataStore (`settings`) as vinkit's `DataStoreAppSettingsRepository`,
+  each touching only its own keys. `DataModule` provides those, vinkit's `ScoresDatabase` + `RoomStatsRepository`
+  (stats only: OX Play has no scores), and the brand color (`BRAND_COLOR`, purple) as `AppSettings`' default.
+- `:app/di/UseCaseModule` assembles the use cases.
+
+### Pitest
+
+- Suspend functions leave coroutine bookkeeping mutants nothing can kill, so use cases weigh on the score: it sits
+  just over 80%. Prefer non-suspend logic in the domain where it reads as well.
 
 ## Git
 

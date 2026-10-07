@@ -2,11 +2,14 @@ plugins {
     alias(libs.plugins.vinkit.jvm.library)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.pitest)
+    `java-test-fixtures`
 }
 
 dependencies {
     api("com.github.vinaooo.vinkit:core:${providers.gradleProperty("vinkit.tag").get()}")
     implementation(libs.kotlinx.serialization.json)
+
+    testFixturesImplementation(libs.kotlinx.coroutines.core)
 }
 
 kover {

@@ -41,6 +41,10 @@ class LinesTest {
         board.place(13, Mark.O)[13] shouldBe Mark.O
         board.emptyCells.size shouldBe 25
         shouldThrow<IllegalArgumentException> { Board(BoardSize.THREE, List(8) { null }) }
+        board.isFull shouldBe false
+        Board(BoardSize.THREE, List(9) { Mark.X }).isFull shouldBe true
+        // An empty cell completes nothing.
+        board.winningLineThrough(13) shouldBe null
     }
 
     @Test
