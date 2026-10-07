@@ -25,12 +25,31 @@ before choosing one. The plan, with the decisions and their defaults, is `PLAN.m
 ./gradlew ktlintCheck detekt                     # static analysis (ktlintFormat fixes formatting)
 ./gradlew test koverVerify                       # unit tests + coverage gates
 ./gradlew lint
+./gradlew :domain:pitest                         # mutation testing (gate: 80% killed, 90% coverage)
 ```
 
 - **Low RAM:** `gradle.properties` is sized for a low-RAM dev machine (2 GB Gradle heap, no parallel builds). Don't
   raise these values. Run the gate in pieces (`ktlintCheck detekt`, `test koverVerify`, `lint`): all of it in one
   invocation runs out of Metaspace. CI writes its own larger settings.
 - Coverage: vinkit's filters leave out composables, generated code, `*Activity` and `*Application`.
+
+## Architecture
+
+### `:domain` (pure Kotlin, package `io.github.vinaooo.xo.domain`)
+
+- **Model:** `Mark` (X, O), `BoardSize` (THREE 3 in a row, FOUR 4, FIVE 4), `Opponent` (EASY, MEDIUM, HARD,
+  TWO_PLAYER), `GameMode(size, opponent)` with a stable `key` ("FIVE_HARD") for vinkit's stats; `Board` (cells row by
+  row, null = empty); `Lines` (every winning run per size, and the runs through each cell, computed once);
+  `GameState(board, mode, toMove, firstMover, status, moves)`, `GameStatus` Playing / Won(mark, line) / Draw. All
+  `@Serializable`. Against the AI the player is X (`GameMode.HUMAN`).
+- **Engine:** `GameEngine.newGame/apply/isLegal/legalMoves`; one move type (`Move.Place`), so no per-move rule objects.
+  A placement checks only the lines through its cell.
+- **Session:** `GameSession(seed, state, undos, redos)` keeps whole-state snapshots (a board is at most 25 cells).
+  Against the AI, undo and redo stop only on the player's turn, so the AI's reply goes with the player's move; when
+  the AI opened, its first move can't be undone. A finished game can't be undone. `GameSession.codec` is vinkit's
+  `GameCodec` for bug reports.
+- **Tests:** property tests over random legal games on every mode (board valid, `legalMoves` agrees with `isLegal`,
+  undo all + redo all comes back).
 
 ## Git
 
