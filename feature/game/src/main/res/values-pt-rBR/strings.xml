@@ -24,4 +24,13 @@
     <string name="a11y_cell_hinted">%1$s, sugerida</string>
     <string name="a11y_placed">%1$s na %2$s</string>
     <string name="a11y_hinted">Dica: %1$s</string>
+    <string name="section_game">Jogo</string>
+    <string name="board">Tabuleiro</string>
+    <string name="opponent">Adversário</string>
+    <string name="opponent_easy_note">Joga em qualquer casa</string>
+    <string name="opponent_medium_note">Ganha e bloqueia quando vê como; senão, fica com o meio</string>
+    <string name="opponent_hard_note">Pensa à frente: nunca perde no 3×3</string>
+    <string name="opponent_two_player_note">Duas pessoas neste celular, revezando</string>
+    <string name="new_game_not_counted">Isto vai começar um novo jogo. O jogo atual será perdido.</string>
+    <string name="privacy_policy_url">https://vinaooo.github.io/xo/privacy.html#pt-br</string>
 </resources>

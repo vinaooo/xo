@@ -23,6 +23,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.vinaooo.vinkit.bugreport.ReportTarget
 import io.github.vinaooo.vinkit.shell.FrameInfo
 import io.github.vinaooo.vinkit.shell.GameFrame
 import io.github.vinaooo.vinkit.shell.GameSurface
@@ -38,7 +39,9 @@ import io.github.vinaooo.xo.feature.game.GameIntent
 import io.github.vinaooo.xo.feature.game.GameUiState
 import io.github.vinaooo.xo.feature.game.GameViewModel
 import io.github.vinaooo.xo.feature.game.R
+import io.github.vinaooo.xo.feature.game.REPORT_TARGET
 import io.github.vinaooo.xo.feature.game.board.XoBoard
+import io.github.vinaooo.xo.feature.game.gameReport
 import kotlinx.coroutines.delay
 
 /** The game screen. The Scores and Settings buttons show only when their screens exist (non-null). */
@@ -50,7 +53,7 @@ fun GameRoute(
     viewModel: GameViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    GameScreen(uiState, viewModel::onIntent, modifier, onOpenScores, onOpenSettings)
+    GameScreen(uiState, viewModel::onIntent, modifier, onOpenScores, onOpenSettings, REPORT_TARGET)
 }
 
 @Composable
@@ -60,10 +63,17 @@ fun GameScreen(
     modifier: Modifier = Modifier,
     onOpenScores: (() -> Unit)? = null,
     onOpenSettings: (() -> Unit)? = null,
+    reportTarget: ReportTarget? = null,
 ) {
     val session = uiState.session
     val spoken = uiState.announcement?.let { announcementText(it) }
-    GameSurface(announcement = spoken, announcementSequence = uiState.announcementSequence, modifier = modifier) { _ ->
+    GameSurface(
+        announcement = spoken,
+        announcementSequence = uiState.announcementSequence,
+        modifier = modifier,
+        reportTarget = reportTarget,
+        gameReport = { gameReport(uiState) },
+    ) { reportBug ->
         GameFrame(
             settings = uiState.settings,
             info = { frame -> Info(uiState, frame) },
@@ -82,7 +92,7 @@ fun GameScreen(
                     )
                 }
             },
-            toolbar = { frame -> Toolbar(uiState, onIntent, frame) },
+            toolbar = { frame -> Toolbar(uiState, onIntent, frame, reportBug) },
             onOpenScores = onOpenScores,
             onOpenSettings = onOpenSettings,
         )
@@ -112,7 +122,12 @@ private fun Info(uiState: GameUiState, frame: FrameInfo) {
 }
 
 @Composable
-private fun Toolbar(uiState: GameUiState, onIntent: (GameIntent) -> Unit, frame: FrameInfo) {
+private fun Toolbar(
+    uiState: GameUiState,
+    onIntent: (GameIntent) -> Unit,
+    frame: FrameInfo,
+    onReportBug: (() -> Unit)?,
+) {
     val session = uiState.session
     val idle = !uiState.aiThinking
     val hintShown = uiState.hint != null
@@ -140,6 +155,7 @@ private fun Toolbar(uiState: GameUiState, onIntent: (GameIntent) -> Unit, frame:
         menuOptions = listOf(
             MenuOption(Icons.Rounded.Replay, stringResource(R.string.new_game)) { onIntent(GameIntent.NewGame) },
         ),
+        onReportBug = onReportBug,
         vertical = frame.landscape,
         mirrored = frame.mirrored,
     )

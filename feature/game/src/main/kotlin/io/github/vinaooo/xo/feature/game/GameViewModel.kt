@@ -23,6 +23,7 @@ import io.github.vinaooo.xo.domain.usecase.StartNewGame
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -116,13 +117,17 @@ class GameViewModel @Inject constructor(
         finishGame(session)
     }
 
-    /** The AI answers after a short pause, so its move is seen arriving. */
+    /**
+     * The AI answers after a short pause, so its move is seen arriving. It thinks during the pause, so a search
+     * shorter than the pause (hard on a phone: up to ~400 ms on 5×5) adds no wait.
+     */
     private fun answer(session: GameSession) {
         val ai = aiFor(session.state.mode.opponent) ?: return
         state.update { it.copy(aiThinking = true) }
         thinking = viewModelScope.launch {
+            val move = async(aiDispatcher) { ai.move(session.state, session.random()) }
             delay(AI_PAUSE_MILLIS)
-            val cell = withContext(aiDispatcher) { ai.move(session.state, session.random()) }
+            val cell = move.await()
             session.play(Move.Place(cell), engine)?.let { moved(it, cell) }
         }
     }

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.vinkit.android.application)
     alias(libs.plugins.vinkit.android.compose)
     alias(libs.plugins.vinkit.hilt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -30,10 +31,16 @@ dependencies {
     implementation(project(":feature:game"))
     implementation("com.github.vinaooo.vinkit:designsystem:${providers.gradleProperty("vinkit.tag").get()}")
     implementation("com.github.vinaooo.vinkit:shell:${providers.gradleProperty("vinkit.tag").get()}")
+    implementation("com.github.vinaooo.vinkit:ads:${providers.gradleProperty("vinkit.tag").get()}")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.androidx.test.core)
+    testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.compiler)
 }

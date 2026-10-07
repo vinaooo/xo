@@ -30,4 +30,15 @@
     <!-- %1$s: X or O; %2$s: the cell. -->
     <string name="a11y_placed">%1$s in %2$s</string>
     <string name="a11y_hinted">Hint: %1$s</string>
+    <!-- Settings -->
+    <string name="section_game">Game</string>
+    <string name="board">Board</string>
+    <string name="opponent">Opponent</string>
+    <string name="opponent_easy_note">Plays anywhere</string>
+    <string name="opponent_medium_note">Wins and blocks when it sees how, otherwise takes the middle</string>
+    <string name="opponent_hard_note">Thinks ahead: never loses on 3×3</string>
+    <string name="opponent_two_player_note">Two people on this phone, taking turns</string>
+    <string name="new_game_not_counted">This will start a new game. The current game will be lost.</string>
+    <!-- Jumps to the policy in this language. -->
+    <string name="privacy_policy_url">https://vinaooo.github.io/xo/privacy.html#en</string>
 </resources>

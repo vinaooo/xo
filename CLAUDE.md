@@ -58,6 +58,10 @@ before choosing one. The plan, with the decisions and their defaults, is `PLAN.m
     Perfect play draws the bigger boards, so many moves tie; ties go to the move leaving the most open lines, which
     is what beats a player who errs (without it, hard drew 13 of 30 games against random play on 4×4; now 1).
     Moves are searched wins first, then blocks, then by open lines (`orderedMoves`).
+  - With at most one mark on 4×4 / 5×5, hard takes a free center cell without searching (`obviousMove`): that widest
+    search took ~650 ms on the user's Moto (XT2125, release build compiled `speed-profile`) only to pick a center.
+  - Measured on that phone (release, `speed-profile`): slowest hard move 420 ms on 4×4 and 396 ms on 5×5, the first
+    searched moves; later moves under 250 ms. The ViewModel thinks during its 400 ms pause, so that's the wait.
   - Measured (JVM): slowest hard move 191 ms on 4×4, 61 ms on 5×5. Against easy over 30 games: 28/30 wins on 3×3,
     29/30 on 4×4, 30/30 on 5×5, never a loss.
 - **Use cases:** `StartNewGame(mode?)` (Settings' mode by default; the opener alternates through
@@ -97,13 +101,35 @@ before choosing one. The plan, with the decisions and their defaults, is `PLAN.m
   winner's color. `BoardGeometry` (pure) maps taps to cells. One invisible TalkBack node per cell, row by row ("row
   2, column 3, X" / "empty" / ", suggested"), with a click only on empty cells while the player may play.
   `MarkColorsTest` keeps X and O at ≥ 3:1 against the surface in every palette, light and dark.
-- `:app/di/GameModule` provides vinkit's `AndroidGameFeedback` (singleton) and `@AiDispatcher` = `Dispatchers.Default`.
-  Until milestone 6, `MainActivity` shows the game alone.
+- **Settings** (`settings/`): vinkit's `SettingsScreen` with a Game section (board: segmented 3×3 / 4×4 / 5×5;
+  opponent: vinkit `IconChoice` with a note per opponent). A change while a game is in progress asks first
+  (`PendingMode`): vinkit's "counts as a loss" text against the AI, "will be lost" in 2-player (not recorded). The
+  privacy policy is `privacy_policy_url` (`/xo/privacy.html#en` / `#pt-br` on vinaooo.github.io, written in release
+  prep).
+- **Scores** (`scores/`): vinkit's `ScoresScreen(ranked = false)` (stats with draws and losses); `XoScoresViewModel`
+  subclasses vinkit's `ScoresViewModel` with the 9 AI mode keys in board-then-opponent order and an empty
+  `ScoreRepository` (OX Play has no scores).
+- **Bug report:** `GameSurface` with `REPORT_TARGET` (`vrpedrinho+xo@gmail.com`, user's choice, or an issue on
+  `vinaooo/xo`); `gameReport` adds a settings line, a game line, the `GameCodec` state and `game.json`. No
+  `DebugGameActivity` yet to replay a "State:" block (release prep).
+- `:app`: `OxPlayApp` (type-safe NavHost: game, Scores, Settings; the banner only under the game, which consumes the
+  navigation-bar inset), `di/GameModule` (vinkit's `AndroidGameFeedback`, `@AiDispatcher` = `Dispatchers.Default`),
+  `di/AdsModule` (vinkit's `PlaceholderAdBanner` until the AdMob app exists; then `AdMobBanner` + consent and
+  Settings' privacy options). `AdBannerGameScreenOnlyTest` runs the real app under Hilt.
 
 ### Pitest
 
-- Suspend functions leave coroutine bookkeeping mutants nothing can kill, so use cases weigh on the score: it sits
-  just over 80%. Prefer non-suspend logic in the domain where it reads as well.
+- Suspend functions leave coroutine bookkeeping mutants nothing can kill; `avoidCallsTo kotlin.ResultKt` drops the
+  `throwOnFailure` ones. Prefer non-suspend logic in the domain where it reads as well.
+
+## Device testing
+
+- The user's phone (Moto XT2125, `nio_retcn`, wireless adb, no Google Play services) and the emulators
+  `Pixel_9a_Android_16` (Play Store image), `Pixel_Tablet_Android_16`, `Solo_API_26` (minSdk). Taps from a script:
+  `uiautomator dump` gives each TalkBack node's bounds ("row 1, column 1, empty", "Settings").
+- Timing: a temporary `Log` line around `ai.move` in a release build (`assembleRelease`, `zipalign -p 4`, `apksigner`
+  with `~/.android/debug.keystore`, `adb install -r`, `cmd package compile -m speed-profile -f
+  io.github.vinaooo.xo`), never committed.
 
 ## Git
 
