@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.vinkit.android.feature)
+    alias(libs.plugins.roborazzi)
 }
 
 android {
@@ -16,4 +17,8 @@ dependencies {
     implementation("com.github.vinaooo.vinkit:scores:$vinkit")
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.compose.material.icons.extended)
+
+    testImplementation(libs.roborazzi)
+    testImplementation(libs.roborazzi.compose)
+    testImplementation(libs.roborazzi.junit.rule)
 }

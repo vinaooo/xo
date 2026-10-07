@@ -25,6 +25,7 @@ before choosing one. The plan, with the decisions and their defaults, is `PLAN.m
 ./gradlew ktlintCheck detekt                     # static analysis (ktlintFormat fixes formatting)
 ./gradlew test koverVerify                       # unit tests + coverage gates
 ./gradlew lint
+./gradlew recordRoborazziDebug                   # re-record screenshot goldens after an intended UI change
 ./gradlew :domain:pitest                         # mutation testing (gate: 80% killed, 90% coverage)
 ```
 
@@ -121,6 +122,18 @@ before choosing one. The plan, with the decisions and their defaults, is `PLAN.m
 
 - Suspend functions leave coroutine bookkeeping mutants nothing can kill; `avoidCallsTo kotlin.ResultKt` drops the
   `throwOnFailure` ones. Prefer non-suspend logic in the domain where it reads as well.
+
+### Look
+
+- **Launcher icon:** adaptive vector, white strokes on brand purple (`#794F81`, vinkit's `PurpleColors.light.primary`):
+  a 3×3 grid (cells 16 wide, 30–78, every stroke end inside the 66dp safe circle) with X top left and in the middle
+  and O top right (user's choice: "mini 3×3 board"). A separate monochrome layer with the same strokes in black for
+  themed icons. `LauncherIconScreenshotTest` keeps a golden of the icon and two themed tints.
+- **Screenshots** (Roborazzi, `src/test/screenshots/`, verified on every `test`): `GameScreenScreenshotTest` shoots
+  3×3 light, 4×4 dark with a hint, a won 5×5 with its line struck, left-handed landscape, tablet phone view on the
+  right, and pt-BR, with dynamic color off (brand purple) and the clock held so the end dialog isn't up yet.
+- Checked on the `Pixel_Tablet_Android_16` emulator: landscape layout, the 320dp ad slot, Settings in two columns,
+  phone view (board, toolbar under it, on the chosen side) and the whole UI in pt-BR (`cmd locale set-app-locales`).
 
 ## Device testing
 
