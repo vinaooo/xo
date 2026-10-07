@@ -1,0 +1,33 @@
+<resources>
+    <!-- %1$s: the board size; %2$s: the opponent. -->
+    <string name="mode_name">%1$s · %2$s</string>
+    <string name="board_size">%1$d×%2$d</string>
+    <string name="opponent_easy">Easy</string>
+    <string name="opponent_medium">Medium</string>
+    <string name="opponent_hard">Hard</string>
+    <string name="opponent_two_player">2 players</string>
+    <string name="mark_x">X</string>
+    <string name="mark_o">O</string>
+    <string name="your_turn">Your turn</string>
+    <string name="ai_thinking">Thinking…</string>
+    <!-- %1$s: X or O. -->
+    <string name="turn_of">%1$s\'s turn</string>
+    <string name="you_won">You won!</string>
+    <string name="you_lost">You lost</string>
+    <string name="draw">Draw</string>
+    <!-- %1$s: X or O. -->
+    <string name="mark_wins">%1$s wins!</string>
+    <string name="moves">Moves: %1$d</string>
+    <string name="apply_hint">Play the hint</string>
+    <string name="new_game">New game</string>
+    <!-- TalkBack -->
+    <string name="a11y_board">Board</string>
+    <string name="a11y_cell">row %1$d, column %2$d</string>
+    <string name="a11y_empty">empty</string>
+    <!-- %1$s: the cell; %2$s: X, O or empty. -->
+    <string name="a11y_cell_content">%1$s, %2$s</string>
+    <string name="a11y_cell_hinted">%1$s, suggested</string>
+    <!-- %1$s: X or O; %2$s: the cell. -->
+    <string name="a11y_placed">%1$s in %2$s</string>
+    <string name="a11y_hinted">Hint: %1$s</string>
+</resources>

@@ -42,3 +42,4 @@ rootProject.name = "OXPlay"
 include(":app")
 include(":domain")
 include(":data")
+include(":feature:game")
