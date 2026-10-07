@@ -48,6 +48,21 @@ before choosing one. The plan, with the decisions and their defaults, is `PLAN.m
   Against the AI, undo and redo stop only on the player's turn, so the AI's reply goes with the player's move; when
   the AI opened, its first move can't be undone. A finished game can't be undone. `GameSession.codec` is vinkit's
   `GameCodec` for bug reports.
+- **AI (`ai`):** `Ai.move(state, random)` picks a cell for the side to move; `aiFor(opponent)`. `GameSession.random()`
+  is `Random(seed * 31 + moves)`: never change it, or saved games and bug reports replay different AI moves.
+  - `RandomAi` (easy): any empty cell.
+  - `HeuristicAi` (medium): win, else block, else a center cell, else any. Blind to forks.
+  - `MinimaxAi` (hard): negamax with alpha-beta and a per-search transposition table (only exact values cached).
+    Full depth on 3×3 (never loses); on 4×4 depth 6 (full once ≤ 9 cells are empty), on 5×5 depth 4 (6 once ≤ 9
+    empty), with an open-line evaluation (a line holding only one side's marks scores 1, 10, 100, 1000 by count).
+    Perfect play draws the bigger boards, so many moves tie; ties go to the move leaving the most open lines, which
+    is what beats a player who errs (without it, hard drew 13 of 30 games against random play on 4×4; now 1).
+    Moves are searched wins first, then blocks, then by open lines (`orderedMoves`).
+  - Measured (JVM): slowest hard move 191 ms on 4×4, 61 ms on 5×5. Against easy over 30 games: 28/30 wins on 3×3,
+    29/30 on 4×4, 30/30 on 5×5, never a loss.
+- **Tests:** `AiStrengthTest` plays whole games (never loses on 3×3 against every possible reply, beats easy, timing);
+  it's slow, so Pitest leaves it out, and `AiTest` pins the same code with exact checks (search value = plain negamax
+  on every 3×3 position, best-value moves, ordering, evaluation against a plain count).
 - **Tests:** property tests over random legal games on every mode (board valid, `legalMoves` agrees with `isLegal`,
   undo all + redo all comes back).
 
