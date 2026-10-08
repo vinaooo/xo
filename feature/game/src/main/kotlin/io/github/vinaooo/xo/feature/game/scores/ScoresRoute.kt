@@ -6,8 +6,10 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.vinaooo.vinkit.scores.ScoresScreen
+import io.github.vinaooo.xo.domain.model.BoardSize
 import io.github.vinaooo.xo.domain.model.GameMode
-import io.github.vinaooo.xo.feature.game.ui.modeName
+import io.github.vinaooo.xo.feature.game.ui.opponentName
+import io.github.vinaooo.xo.feature.game.ui.sizeName
 
 @Composable
 fun ScoresRoute(onBack: () -> Unit, modifier: Modifier = Modifier, viewModel: XoScoresViewModel = hiltViewModel()) {
@@ -15,9 +17,10 @@ fun ScoresRoute(onBack: () -> Unit, modifier: Modifier = Modifier, viewModel: Xo
     ScoresScreen(
         uiState = uiState,
         onBack = onBack,
-        modeName = { key -> GameMode.fromKey(key)?.let { modeName(it) } ?: key },
+        modeName = { key -> GameMode.fromKey(key)?.let { opponentName(it.opponent) } ?: key },
         modifier = modifier,
-        onSelectMode = viewModel::selectMode,
+        groupName = { size -> BoardSize.entries.firstOrNull { it.name == size }?.let { sizeName(it) } ?: size },
+        onSelectGroup = viewModel::selectGroup,
         ranked = false,
     )
 }
