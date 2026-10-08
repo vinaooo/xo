@@ -99,7 +99,10 @@ before choosing one. The plan, with the decisions and their defaults, is `PLAN.m
   "Thinking…", "X's turn") or the result, one TalkBack item. Toolbar: undo, redo, hint (a check while a hint shows);
   menu: new game. The end dialog (vinkit `WinDialog`) waits 900 ms so the winning line is seen struck; the player's win
   (or any 2-player win) gets a celebration, a loss or draw doesn't.
-- **Board (`XoBoard` + `HandDrawn.kt`):** drawn by hand (user's choice among five prototypes): a wavering pen grid in
+- **Board (`XoBoard` + `HandDrawn.kt` + `SketchbookPaper.kt`):** drawn by hand (user's choice among five prototypes) on
+  a sketchbook page (user's choice among notebook, graph, sketchbook, sticky note; notebook was tried first): an
+  off-white page (`surfaceContainerLow`) with a soft shadow and a light grain (three batches of fixed specks, one
+  `drawPoints` each, cheap to redraw during animations). Then a wavering pen grid in
   `onSurfaceVariant`, X (`primary`) and O (`tertiary`) in four shapes each, picked by the cell
   (`(cell * 7 + mark) % 4`) so a board looks varied and a mark never changes shape, and the winning line struck with
   the same pen past the end cells. X shapes (user tuned: "the middle ground"): straight; tilted 8° with a shorter

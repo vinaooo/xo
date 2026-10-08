@@ -23,9 +23,9 @@ internal class BoardPicture(val board: Board, val hint: Int?, val winningLine: L
 internal class BoardMotion(val progress: (Int) -> Float, val pop: (Int) -> Float, val strike: Float)
 
 /**
- * The board drawn by hand (user's choice): a wavering pen grid, X and O in four shapes each, picked by their cell so a
- * board looks varied and a mark never changes shape while it's on the board, and the winning line struck with the
- * same pen.
+ * The board drawn by hand on a sketchbook page (both the user's choice): a wavering pen grid, X and O in four
+ * shapes each, picked by their cell so a board looks varied and a mark never changes shape while it's on the board,
+ * and the winning line struck with the same pen.
  */
 internal fun DrawScope.drawHandDrawnBoard(
     picture: BoardPicture,
@@ -34,6 +34,7 @@ internal fun DrawScope.drawHandDrawnBoard(
     colors: ColorScheme,
 ) {
     val board = picture.board
+    drawSketchbookPaper(colors)
     picture.hint?.let { drawHintCell(geometry, it, colors.tertiaryContainer) }
     drawSketchGrid(board.size.side, colors.onSurfaceVariant)
     board.cells.forEachIndexed { cell, mark ->
