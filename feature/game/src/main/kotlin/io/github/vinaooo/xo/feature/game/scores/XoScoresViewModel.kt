@@ -11,10 +11,15 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-/** vinkit's Scores, stats only: a tab per AI mode played, in board then opponent order. */
+/** vinkit's Scores, stats only: a tab per board size played, a card per opponent (easy, medium, hard) in it. */
 @HiltViewModel
 class XoScoresViewModel @Inject constructor(stats: StatsRepository) :
-    ScoresViewModel(NoScores, stats, GameMode.ALL.filter { it.isVsAi }.map { it.key })
+    ScoresViewModel(
+        NoScores,
+        stats,
+        modes = GameMode.ALL.filter { it.isVsAi }.map { it.key },
+        groupOf = { key -> GameMode.fromKey(key)?.size?.name ?: key },
+    )
 
 /** OX Play keeps wins, losses and draws, no scores. */
 private object NoScores : ScoreRepository {
