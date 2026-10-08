@@ -99,11 +99,18 @@ before choosing one. The plan, with the decisions and their defaults, is `PLAN.m
   "Thinking…", "X's turn") or the result, one TalkBack item. Toolbar: undo, redo, hint (a check while a hint shows);
   menu: new game. The end dialog (vinkit `WinDialog`) waits 900 ms so the winning line is seen struck; the player's win
   (or any 2-player win) gets a celebration, a loss or draw doesn't.
-- **Board (`XoBoard`):** one `Canvas`: grid in `outlineVariant`, X in `primary` (two strokes), O in `tertiary` (a
-  circle sweep), each drawn in over 250 ms, the hint cell in `tertiaryContainer`, the winning line struck in the
-  winner's color. `BoardGeometry` (pure) maps taps to cells. One invisible TalkBack node per cell, row by row ("row
-  2, column 3, X" / "empty" / ", suggested"), with a click only on empty cells while the player may play.
-  `MarkColorsTest` keeps X and O at ≥ 3:1 against the surface in every palette, light and dark.
+- **Board (`XoBoard` + `HandDrawn.kt` + `SketchbookPaper.kt`):** drawn by hand (user's choice among five prototypes) on
+  a sketchbook page (user's choice among notebook, graph, sketchbook, sticky note; notebook was tried first): an
+  off-white page (`surfaceContainerLow`) with a soft shadow and a light grain (three batches of fixed specks, one
+  `drawPoints` each, cheap to redraw during animations). Then a wavering pen grid in
+  `onSurfaceVariant`, X (`primary`) and O (`tertiary`) in four shapes each, picked by the cell
+  (`(cell * 7 + mark) % 4`) so a board looks varied and a mark never changes shape, and the winning line struck with
+  the same pen past the end cells. X shapes (user tuned: "the middle ground"): straight; tilted 8° with a shorter
+  second stroke; tilted -8°, bowed both ways, crossing off center; wide and flat with a small end flick. O shapes: an
+  overshooting loop, a tilted open oval, a 1¼-turn spiral, a lopsided egg. A new mark draws its strokes in (250 ms)
+  and pops in from 70% size on a bouncy spring (damping 0.45). `BoardGeometry` (pure) maps taps to cells. One
+  invisible TalkBack node per cell, row by row ("row 2, column 3, X" / "empty" / ", suggested"), with a click only on
+  empty cells while the player may play. `MarkColorsTest` keeps X and O at ≥ 3:1 against the surface in every palette.
 - **Settings** (`settings/`): vinkit's `SettingsScreen` with a Game section (board: segmented 3×3 / 4×4 / 5×5;
   opponent: vinkit `IconChoice` with a note per opponent). A change while a game is in progress asks first
   (`PendingMode`): vinkit's "counts as a loss" text against the AI, "will be lost" in 2-player (not recorded). The
