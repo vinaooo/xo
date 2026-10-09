@@ -7,6 +7,7 @@ import androidx.compose.material.icons.automirrored.rounded.Redo
 import androidx.compose.material.icons.automirrored.rounded.Undo
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Lightbulb
+import androidx.compose.material.icons.rounded.MilitaryTech
 import androidx.compose.material.icons.rounded.Replay
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -17,22 +18,26 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.vinaooo.vinkit.achievements.R as BadgesR
 import io.github.vinaooo.vinkit.bugreport.ReportTarget
 import io.github.vinaooo.vinkit.shell.FrameInfo
 import io.github.vinaooo.vinkit.shell.GameFrame
 import io.github.vinaooo.vinkit.shell.GameSurface
 import io.github.vinaooo.vinkit.shell.GameToolbar
 import io.github.vinaooo.vinkit.shell.MenuOption
+import io.github.vinaooo.vinkit.shell.NavigationAction
 import io.github.vinaooo.vinkit.shell.R as ShellR
 import io.github.vinaooo.vinkit.shell.ToolbarAction
 import io.github.vinaooo.vinkit.shell.WinCelebration
 import io.github.vinaooo.vinkit.shell.WinDialog
+import io.github.vinaooo.xo.domain.model.Achievement
 import io.github.vinaooo.xo.domain.model.GameMode
 import io.github.vinaooo.xo.domain.model.GameStatus
 import io.github.vinaooo.xo.feature.game.GameIntent
@@ -40,6 +45,7 @@ import io.github.vinaooo.xo.feature.game.GameUiState
 import io.github.vinaooo.xo.feature.game.GameViewModel
 import io.github.vinaooo.xo.feature.game.R
 import io.github.vinaooo.xo.feature.game.REPORT_TARGET
+import io.github.vinaooo.xo.feature.game.badges.badge
 import io.github.vinaooo.xo.feature.game.board.XoBoard
 import io.github.vinaooo.xo.feature.game.gameReport
 import kotlinx.coroutines.delay
@@ -50,10 +56,11 @@ fun GameRoute(
     modifier: Modifier = Modifier,
     onOpenScores: (() -> Unit)? = null,
     onOpenSettings: (() -> Unit)? = null,
+    onOpenBadges: (() -> Unit)? = null,
     viewModel: GameViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    GameScreen(uiState, viewModel::onIntent, modifier, onOpenScores, onOpenSettings, REPORT_TARGET)
+    GameScreen(uiState, viewModel::onIntent, modifier, onOpenScores, onOpenSettings, REPORT_TARGET, onOpenBadges)
 }
 
 @Composable
@@ -64,6 +71,7 @@ fun GameScreen(
     onOpenScores: (() -> Unit)? = null,
     onOpenSettings: (() -> Unit)? = null,
     reportTarget: ReportTarget? = null,
+    onOpenBadges: (() -> Unit)? = null,
 ) {
     val session = uiState.session
     val spoken = uiState.announcement?.let { announcementText(it) }
@@ -95,6 +103,11 @@ fun GameScreen(
             toolbar = { frame -> Toolbar(uiState, onIntent, frame, reportBug) },
             onOpenScores = onOpenScores,
             onOpenSettings = onOpenSettings,
+            navigation = listOfNotNull(
+                onOpenBadges?.let {
+                    NavigationAction(Icons.Rounded.MilitaryTech, stringResource(BadgesR.string.vinkit_badges), it)
+                },
+            ),
         )
     }
     EndDialog(uiState, onNewGame = { onIntent(GameIntent.NewGame) })
@@ -180,11 +193,23 @@ private fun EndDialog(uiState: GameUiState, onNewGame: () -> Unit) {
     val status = state.status
     val celebrate = status is GameStatus.Won && (!state.mode.isVsAi || status.mark == GameMode.HUMAN)
     WinDialog(
-        lines = listOf(modeName(state.mode), stringResource(R.string.moves, state.moves)),
+        lines = listOfNotNull(
+            modeName(state.mode),
+            stringResource(R.string.moves, state.moves),
+            earnedText(uiState.earned),
+        ),
         onNewGame = onNewGame,
         title = resultText(status, state.mode.isVsAi),
         kind = celebration.takeIf { celebrate },
     )
+}
+
+/** The badges a game just earned: the one by name, or how many. */
+@Composable
+private fun earnedText(earned: Set<Achievement>): String? = when (earned.size) {
+    0 -> null
+    1 -> stringResource(R.string.new_badge, badge(earned.first()).name)
+    else -> pluralStringResource(R.plurals.new_badges, earned.size, earned.size)
 }
 
 /** Long enough to see the winning line struck through before the dialog covers the board. */

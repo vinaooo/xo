@@ -41,4 +41,62 @@
     <string name="new_game_not_counted">This will start a new game. The current game will be lost.</string>
     <!-- Jumps to the policy in this language. -->
     <string name="privacy_policy_url">https://vinaooo.github.io/xo/privacy.html#en</string>
+    <!-- Badges: games against the AI only. -->
+    <string name="new_badge">New badge: %1$s</string>
+    <plurals name="new_badges">
+        <item quantity="one">%d new badge</item>
+        <item quantity="other">%d new badges</item>
+    </plurals>
+    <plurals name="badge_played_name">
+        <item quantity="one">%d game played</item>
+        <item quantity="other">%d games played</item>
+    </plurals>
+    <plurals name="badge_played_note">
+        <item quantity="one">Finish %d game against the AI</item>
+        <item quantity="other">Finish %d games against the AI</item>
+    </plurals>
+    <plurals name="badge_won_name">
+        <item quantity="one">%d win</item>
+        <item quantity="other">%d wins</item>
+    </plurals>
+    <plurals name="badge_won_note">
+        <item quantity="one">Win %d game against the AI</item>
+        <item quantity="other">Win %d games against the AI</item>
+    </plurals>
+    <plurals name="badge_streak_name">
+        <item quantity="one">%d win in a row</item>
+        <item quantity="other">%d wins in a row</item>
+    </plurals>
+    <plurals name="badge_streak_note">
+        <item quantity="one">Win %d game in a row on one board against one opponent</item>
+        <item quantity="other">Win %d games in a row on one board against one opponent</item>
+    </plurals>
+    <plurals name="badge_days_name">
+        <item quantity="one">%d day in a row</item>
+        <item quantity="other">%d days in a row</item>
+    </plurals>
+    <plurals name="badge_days_note">
+        <item quantity="one">Play against the AI %d day in a row</item>
+        <item quantity="other">Play against the AI %d days in a row</item>
+    </plurals>
+    <string name="badge_win_three_name">3×3 win</string>
+    <string name="badge_win_three_note">Win a game on 3×3</string>
+    <string name="badge_win_four_name">4×4 win</string>
+    <string name="badge_win_four_note">Win a game on 4×4</string>
+    <string name="badge_win_five_name">5×5 win</string>
+    <string name="badge_win_five_note">Win a game on 5×5</string>
+    <string name="badge_win_every_size_name">Every board</string>
+    <string name="badge_win_every_size_note">Win on 3×3, 4×4 and 5×5</string>
+    <string name="badge_beat_hard_name">Hard beaten</string>
+    <string name="badge_beat_hard_note">Beat Hard on 4×4 or 5×5</string>
+    <string name="badge_draw_hard_name">Even match</string>
+    <string name="badge_draw_hard_note">Draw against Hard on 3×3, where it never loses</string>
+    <string name="badge_quick_win_name">Straight to the point</string>
+    <string name="badge_quick_win_note">Beat Medium or Hard with no mark to spare: 3 on 3×3, 4 on 4×4 and 5×5</string>
+    <string name="badge_win_second_name">Second to none</string>
+    <string name="badge_win_second_note">Beat Medium or Hard in a game it opened</string>
+    <string name="badge_no_hints_name">On your own</string>
+    <string name="badge_no_hints_note">Beat Medium or Hard without a hint</string>
+    <string name="badge_no_undo_name">No take-backs</string>
+    <string name="badge_no_undo_note">Beat Medium or Hard without undoing a move</string>
 </resources>

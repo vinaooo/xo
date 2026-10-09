@@ -5,10 +5,12 @@ import io.github.vinaooo.vinkit.core.AppSettingsRepository
 import io.github.vinaooo.vinkit.core.GameStats
 import io.github.vinaooo.vinkit.shell.FeedbackEvent
 import io.github.vinaooo.vinkit.shell.GameFeedback
+import io.github.vinaooo.xo.domain.fake.FakeAchievementRepository
 import io.github.vinaooo.xo.domain.fake.FakeGameSettingsRepository
 import io.github.vinaooo.xo.domain.fake.FakeSavedGameRepository
 import io.github.vinaooo.xo.domain.fake.FakeSeedSource
 import io.github.vinaooo.xo.domain.fake.FakeStatsRepository
+import io.github.vinaooo.xo.domain.model.Achievement
 import io.github.vinaooo.xo.domain.model.BoardSize
 import io.github.vinaooo.xo.domain.model.GameMode
 import io.github.vinaooo.xo.domain.model.GameStatus
@@ -21,10 +23,12 @@ import io.github.vinaooo.xo.domain.usecase.FinishGame
 import io.github.vinaooo.xo.domain.usecase.ResumeGame
 import io.github.vinaooo.xo.domain.usecase.SaveGame
 import io.github.vinaooo.xo.domain.usecase.StartNewGame
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import java.time.LocalDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -70,7 +74,7 @@ class GameViewModelTest {
         StartNewGame(savedGames, gameSettings, stats, FakeSeedSource(), engine),
         ResumeGame(savedGames),
         SaveGame(savedGames),
-        FinishGame(savedGames, stats),
+        FinishGame(savedGames, stats, FakeAchievementRepository()) { LocalDate.of(2026, 10, 9) },
         appSettings,
         gameSettings,
         engine,
@@ -159,6 +163,7 @@ class GameViewModelTest {
         vm.onIntent(GameIntent.Hint)
         vm.session().state.board[hint] shouldBe Mark.X
         vm.uiState.value.hint.shouldBeNull()
+        vm.session().hintsUsed shouldBe 1
     }
 
     @Test
@@ -184,6 +189,10 @@ class GameViewModelTest {
         // The hard AI never loses on 3×3.
         val key = GameMode(BoardSize.THREE, Opponent.HARD).key
         stats.stats.value.getValue(key).let { (it.played to it.won) } shouldBe (1 to 0)
+        vm.uiState.value.earned shouldContain Achievement.PLAYED_1
+        vm.onIntent(GameIntent.NewGame)
+        advanceUntilIdle()
+        vm.uiState.value.earned shouldBe emptySet()
     }
 
     @Test

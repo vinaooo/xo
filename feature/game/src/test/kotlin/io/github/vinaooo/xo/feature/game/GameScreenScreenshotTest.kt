@@ -46,7 +46,7 @@ class GameScreenScreenshotTest {
         compose.mainClock.autoAdvance = false
         compose.setContent {
             VinkitTheme(app.themeColor, app.themeMode, app.dynamicColor) {
-                GameScreen(state.copy(settings = app), {}, onOpenScores = {}, onOpenSettings = {})
+                GameScreen(state.copy(settings = app), {}, onOpenScores = {}, onOpenSettings = {}, onOpenBadges = {})
             }
         }
         // Marks drawn in, the winning line struck, the end dialog not yet shown.

@@ -14,6 +14,7 @@ import kotlinx.serialization.Serializable
  *
  * Against the AI, undo goes back to the player's previous turn, taking the AI's reply back with the player's move,
  * and redo replays both. A finished game can't be undone: its result is already in the stats. A new move clears redo.
+ * [hintsUsed] and [undosUsed] count over the whole game (undo doesn't take them back), for the badges.
  */
 @Serializable
 data class GameSession(
@@ -21,6 +22,8 @@ data class GameSession(
     val state: GameState,
     val undos: List<GameState> = emptyList(),
     val redos: List<GameState> = emptyList(),
+    val hintsUsed: Int = 0,
+    val undosUsed: Int = 0,
 ) {
     val canUndo: Boolean get() = !state.isOver && undos.any(::isPlayersTurn)
 
@@ -44,7 +47,7 @@ data class GameSession(
                 redos = session.redos + session.state,
             )
         } while (!isPlayersTurn(session.state))
-        return session
+        return session.copy(undosUsed = undosUsed + 1)
     }
 
     fun redo(): GameSession? {

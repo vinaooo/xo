@@ -70,8 +70,17 @@ before choosing one. The plan, with the decisions and their defaults, is `PLAN.m
 - **Use cases:** `StartNewGame(mode?)` (Settings' mode by default; the opener alternates through
   `GameSettings.nextFirstMover`; an AI game in progress that it replaces counts as a loss; 2-player games are never
   recorded), `ResumeGame`, `SaveGame`, `FinishGame` (the player's win / loss / draw into vinkit's stats under
-  `GameMode.key`, then clears the save). Repositories: `SavedGameRepository`, `GameSettingsRepository`, `SeedSource`,
-  and vinkit's `StatsRepository`; fakes in `testFixtures`.
+  `GameMode.key`, then the badges, then clears the save; returns the badges just earned). Repositories:
+  `SavedGameRepository`, `GameSettingsRepository`, `SeedSource`, and vinkit's `StatsRepository` and
+  `AchievementRepository`; fakes in `testFixtures`.
+- **Badges** (`model/Achievement.kt`, user's choice of every ladder and skill badge offered, modeled on Solo, Sudoku
+  and BattleGrid): games against the AI only. Ladders: played and won 1/10/50/100/500 (summed over the 9 AI modes'
+  stats), streak 3/5/10 (the best `bestStreak` of any mode), days in a row 3/7/30 (`days_played`, a collected set of
+  ISO dates). From the stats too, so play before badges counts: a win on each board and on every board, beating hard
+  (only 4×4 / 5×5 can be won), a draw against hard on 3×3. From the game just won against medium or hard (easy plays at random): quick win (no mark beyond the line
+  length), win when the AI opened, no hints, no undo (`GameSession.hintsUsed` / `undosUsed`: counted over the whole
+  game, undo doesn't take them back; not in the codec). Rules are pure (`Achievements.after`), keys are enum names:
+  never rename one.
 - **Tests:** `AiStrengthTest` plays whole games (never loses on 3×3 against every possible reply, beats easy, timing);
   it's slow, so Pitest leaves it out, and `AiTest` pins the same code with exact checks (search value = plain negamax
   on every 3×3 position, best-value moves, ordering, evaluation against a plain count).
@@ -82,9 +91,9 @@ before choosing one. The plan, with the decisions and their defaults, is `PLAN.m
 
 - `FileSavedGameRepository` (`files/saved_game.json`, a `{version, session}` envelope, temp file + rename; corrupt,
   invalid or unknown-version files are discarded), `DataStoreGameSettingsRepository` (`board_size`, `opponent`,
-  `next_first_mover`) in the same Preferences DataStore (`settings`) as vinkit's `DataStoreAppSettingsRepository`,
-  each touching only its own keys. `DataModule` provides those, vinkit's `ScoresDatabase` + `RoomStatsRepository`
-  (stats only: OX Play has no scores), and the brand color (`BRAND_COLOR`, purple) as `AppSettings`' default.
+  `next_first_mover`) and vinkit's `DataStoreAchievementRepository` (`achievements_*`) in the same Preferences
+  DataStore (`settings`) as vinkit's `DataStoreAppSettingsRepository`, each touching only its own keys. `DataModule`
+  provides those, vinkit's `ScoresDatabase` + `RoomStatsRepository` (stats only: OX Play has no scores), and the brand color (`BRAND_COLOR`, purple) as `AppSettings`' default.
 - `:app/di/UseCaseModule` assembles the use cases.
 
 ### `:feature:game`
@@ -94,11 +103,14 @@ before choosing one. The plan, with the decisions and their defaults, is `PLAN.m
   After any placement it announces it, plays `FeedbackEvent.MOVE`, then finishes (stats, clear save, `WIN` sound
   when the player or either 2-player side won) or saves, and lets the AI answer after a 400 ms pause on the injected
   `@AiDispatcher`; taps wait meanwhile (`canPlay`). Undo and redo cancel a pending answer or hint search; undo works
-  while the AI thinks. Hint: first tap shows hard's move for the side to move, second tap plays it.
+  while the AI thinks. Hint: first tap shows hard's move for the side to move (and counts a hint, saved with the next
+  move), second tap plays it. The badges a finished game earned are `GameUiState.earned` until the next game.
 - **Screen:** vinkit `GameSurface` + `GameFrame`. Info = mode ("4×4 · Hard") over whose turn it is ("Your turn",
   "Thinking…", "X's turn") or the result, one TalkBack item. Toolbar: undo, redo, hint (a check while a hint shows);
   menu: new game. The end dialog (vinkit `WinDialog`) waits 900 ms so the winning line is seen struck; the player's win
-  (or any 2-player win) gets a celebration, a loss or draw doesn't.
+  (or any 2-player win) gets a celebration, a loss or draw doesn't. It names a new badge, or says how many.
+- **Badges screen** (`badges/`): vinkit's `BadgesScreen`, opened by a medal button before Scores and Settings
+  (`GameFrame(navigation = …)`); ladder texts are plurals by count.
 - **Board (`XoBoard` + `HandDrawn.kt` + `SketchbookPaper.kt`):** drawn by hand (user's choice among five prototypes) on
   a sketchbook page (user's choice among notebook, graph, sketchbook, sticky note; notebook was tried first): an
   off-white page (`surfaceContainerLow`) with a soft shadow and a light grain (three batches of fixed specks, one
@@ -124,8 +136,8 @@ before choosing one. The plan, with the decisions and their defaults, is `PLAN.m
 - **`DebugGameActivity`** (debug builds): `adb shell am start -S -n io.github.vinaooo.xo/.debug.DebugGameActivity
   --es game near_win|near_loss|five_full`, or `--es state <code>` (a report's "State:" block), or `--es load
   game.json` (pushed to `/sdcard/Android/data/io.github.vinaooo.xo/files/`).
-- `:app`: `OxPlayApp` (type-safe NavHost: game, Scores, Settings; the banner only under the game, which consumes the
-  navigation-bar inset), `di/GameModule` (vinkit's `AndroidGameFeedback`, `@AiDispatcher` = `Dispatchers.Default`),
+- `:app`: `OxPlayApp` (type-safe NavHost: game, Scores, Badges, Settings; the banner only under the game, which
+  consumes the navigation-bar inset), `di/GameModule` (vinkit's `AndroidGameFeedback`, `@AiDispatcher` = `Dispatchers.Default`),
   `di/AdsModule` (vinkit's `AdMobBanner` and `DefaultAdConsent`, IDs from `BuildConfig`: Google's test IDs in debug
   and until real ones are in `local.properties`; debug builds simulate the EEA). `MainActivity` gathers consent once
   per launch; Settings shows "Privacy options" when UMP requires it. App tests replace `AdsModule` with
