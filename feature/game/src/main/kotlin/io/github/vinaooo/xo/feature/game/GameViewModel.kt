@@ -82,7 +82,7 @@ class GameViewModel @Inject constructor(
     }
 
     private fun show(session: GameSession) {
-        state.update { it.copy(session = session, hint = null, aiThinking = false) }
+        state.update { it.copy(session = session, hint = null, aiThinking = false, earned = emptySet()) }
         if (session.state.isAiTurn) answer(session)
     }
 
@@ -114,7 +114,8 @@ class GameViewModel @Inject constructor(
         val playerWon = status is GameStatus.Won && (!session.state.mode.isVsAi || status.mark == GameMode.HUMAN)
         if (playerWon) feedback.give(FeedbackEvent.WIN, state.value.settings)
         announce(Announcement.Ended(status, session.state.mode.isVsAi))
-        finishGame(session)
+        val earned = finishGame(session)
+        state.update { it.copy(earned = earned) }
     }
 
     /**
@@ -140,6 +141,8 @@ class GameViewModel @Inject constructor(
             place(it)
             return
         }
+        // Counted on the first tap; saved with the next move.
+        state.update { it.copy(session = session.copy(hintsUsed = session.hintsUsed + 1)) }
         thinking = viewModelScope.launch {
             val cell = withContext(aiDispatcher) { MinimaxAi.move(session.state, session.random()) }
             state.update { it.copy(hint = cell) }

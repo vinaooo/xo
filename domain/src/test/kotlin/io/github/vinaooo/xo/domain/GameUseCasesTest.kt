@@ -1,10 +1,13 @@
 package io.github.vinaooo.xo.domain
 
 import io.github.vinaooo.vinkit.core.GameStats
+import io.github.vinaooo.xo.domain.fake.FakeAchievementRepository
 import io.github.vinaooo.xo.domain.fake.FakeGameSettingsRepository
 import io.github.vinaooo.xo.domain.fake.FakeSavedGameRepository
 import io.github.vinaooo.xo.domain.fake.FakeSeedSource
 import io.github.vinaooo.xo.domain.fake.FakeStatsRepository
+import io.github.vinaooo.xo.domain.model.Achievement
+import io.github.vinaooo.xo.domain.model.Achievements
 import io.github.vinaooo.xo.domain.model.BoardSize
 import io.github.vinaooo.xo.domain.model.GameMode
 import io.github.vinaooo.xo.domain.model.Mark
@@ -20,6 +23,7 @@ import io.github.vinaooo.xo.domain.usecase.StartNewGame
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
+import java.time.LocalDate
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 
@@ -30,7 +34,9 @@ class GameUseCasesTest {
     private val gameSettings = FakeGameSettingsRepository(GameSettings(mode = hard4))
     private val stats = FakeStatsRepository()
     private val start = StartNewGame(savedGames, gameSettings, stats, FakeSeedSource(), engine)
-    private val finish = FinishGame(savedGames, stats)
+    private val achievements = FakeAchievementRepository()
+    private var today = LocalDate.of(2026, 10, 9)
+    private val finish = FinishGame(savedGames, stats, achievements) { today }
 
     private fun GameSession.place(vararg cells: Int) = cells.fold(this) { s, cell ->
         s.play(Move.Place(cell), engine)!!
@@ -93,8 +99,9 @@ class GameUseCasesTest {
         val twoPlayer = GameMode(BoardSize.THREE, Opponent.TWO_PLAYER)
         val won = GameSession(1, engine.newGame(twoPlayer, Mark.X)).place(0, 3, 1, 4, 2)
         savedGames.saved = won
-        finish(won)
+        finish(won) shouldBe emptySet()
         stats.stats.value shouldBe emptyMap()
+        achievements.current.value.unlocked shouldBe emptySet()
         savedGames.saved.shouldBeNull()
         shouldThrow<IllegalStateException> { finish(GameSession(1, engine.newGame(twoPlayer, Mark.X))) }
     }
@@ -104,5 +111,16 @@ class GameUseCasesTest {
         val session = GameSession(9, engine.newGame(hard4, Mark.X)).place(5)
         SaveGame(savedGames)(session)
         ResumeGame(savedGames)() shouldBe session
+    }
+
+    @Test
+    fun `finishing returns the badges just earned, and marks the day played`() = runTest {
+        val easy3 = GameMode(BoardSize.THREE, Opponent.EASY)
+        fun game() = GameSession(1, engine.newGame(easy3, Mark.X))
+        val first = finish(game().place(0, 3, 1, 4, 2))
+        first shouldBe setOf(Achievement.PLAYED_1, Achievement.WON_1, Achievement.WIN_THREE)
+        today = today.plusDays(1)
+        finish(game().place(0, 3, 1, 4, 2)) shouldBe emptySet()
+        achievements.current.value.collected[Achievements.DAYS_PLAYED] shouldBe setOf("2026-10-09", "2026-10-10")
     }
 }

@@ -1,7 +1,11 @@
 package io.github.vinaooo.xo.domain.usecase
 
+import io.github.vinaooo.vinkit.core.AchievementRepository
 import io.github.vinaooo.vinkit.core.GameStats
 import io.github.vinaooo.vinkit.core.StatsRepository
+import io.github.vinaooo.vinkit.core.unlock
+import io.github.vinaooo.xo.domain.model.Achievement
+import io.github.vinaooo.xo.domain.model.Achievements
 import io.github.vinaooo.xo.domain.model.GameMode
 import io.github.vinaooo.xo.domain.model.GameStatus
 import io.github.vinaooo.xo.domain.repository.GameSettingsRepository
@@ -9,6 +13,7 @@ import io.github.vinaooo.xo.domain.repository.SavedGameRepository
 import io.github.vinaooo.xo.domain.repository.SeedSource
 import io.github.vinaooo.xo.domain.rules.GameEngine
 import io.github.vinaooo.xo.domain.session.GameSession
+import java.time.LocalDate
 import kotlinx.coroutines.flow.first
 
 /**
@@ -45,20 +50,31 @@ class SaveGame(private val savedGames: SavedGameRepository) {
 }
 
 /**
- * Records a finished game against the AI in its mode's stats, from the player's side, and clears the save. A
- * 2-player game is only cleared.
+ * Records a finished game against the AI in its mode's stats, from the player's side, then the badges, and clears the
+ * save; returns the badges just earned. A 2-player game is only cleared.
  */
-class FinishGame(private val savedGames: SavedGameRepository, private val stats: StatsRepository) {
-    suspend operator fun invoke(session: GameSession) {
+class FinishGame(
+    private val savedGames: SavedGameRepository,
+    private val stats: StatsRepository,
+    private val achievements: AchievementRepository,
+    private val today: () -> LocalDate,
+) {
+    suspend operator fun invoke(session: GameSession): Set<Achievement> {
         val state = session.state
         check(state.isOver) { "Only a finished game can be recorded" }
-        if (state.mode.isVsAi) {
-            val record: (GameStats) -> GameStats = when (val status = state.status) {
-                is GameStatus.Won -> if (status.mark == GameMode.HUMAN) GameStats::afterWin else GameStats::afterLoss
-                else -> GameStats::afterDraw
-            }
-            stats.update(state.mode.key, record)
+        if (!state.mode.isVsAi) {
+            savedGames.clear()
+            return emptySet()
         }
+        val record: (GameStats) -> GameStats = when (val status = state.status) {
+            is GameStatus.Won -> if (status.mark == GameMode.HUMAN) GameStats::afterWin else GameStats::afterLoss
+            else -> GameStats::afterDraw
+        }
+        stats.update(state.mode.key, record)
         savedGames.clear()
+        val all = GameMode.ALL.filter { it.isVsAi }.associateWith { stats.observe(it.key).first() }
+        val date = today()
+        val earned = achievements.unlock { Achievements.after(it, all, session, date) }
+        return Achievement.entries.filter { it.name in earned }.toSet()
     }
 }

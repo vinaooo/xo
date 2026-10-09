@@ -31,12 +31,17 @@ class AdBannerGameScreenOnlyTest {
     val rules: TestRule = RuleChain.outerRule(hilt).around(compose)
 
     @Test
-    fun `the banner is on the game screen and not on scores or settings`() {
+    fun `the banner is on the game screen and not on scores, badges or settings`() {
         compose.onNodeWithContentDescription("Hint").assertExists()
         compose.onNodeWithTag(AdBannerProvider.TEST_TAG).assertExists()
 
         compose.onNodeWithContentDescription("Scores").performClick()
         compose.onNodeWithText("Scores").assertExists()
+        compose.onNodeWithTag(AdBannerProvider.TEST_TAG).assertDoesNotExist()
+
+        compose.onNodeWithContentDescription("Back").performClick()
+        compose.onNodeWithContentDescription("Badges").performClick()
+        compose.onNodeWithText("Badges").assertExists()
         compose.onNodeWithTag(AdBannerProvider.TEST_TAG).assertDoesNotExist()
 
         compose.onNodeWithContentDescription("Back").performClick()

@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.github.vinaooo.vinkit.core.AchievementRepository
 import io.github.vinaooo.vinkit.core.StatsRepository
 import io.github.vinaooo.xo.domain.repository.GameSettingsRepository
 import io.github.vinaooo.xo.domain.repository.SavedGameRepository
@@ -13,6 +14,7 @@ import io.github.vinaooo.xo.domain.usecase.FinishGame
 import io.github.vinaooo.xo.domain.usecase.ResumeGame
 import io.github.vinaooo.xo.domain.usecase.SaveGame
 import io.github.vinaooo.xo.domain.usecase.StartNewGame
+import java.time.LocalDate
 
 /** The domain's classes, which carry no DI annotations, assembled for Hilt. */
 @Module
@@ -37,5 +39,6 @@ object UseCaseModule {
     fun saveGame(savedGames: SavedGameRepository) = SaveGame(savedGames)
 
     @Provides
-    fun finishGame(savedGames: SavedGameRepository, stats: StatsRepository) = FinishGame(savedGames, stats)
+    fun finishGame(savedGames: SavedGameRepository, stats: StatsRepository, achievements: AchievementRepository) =
+        FinishGame(savedGames, stats, achievements) { LocalDate.now() }
 }

@@ -17,6 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.github.vinaooo.vinkit.ads.AdBannerProvider
+import io.github.vinaooo.xo.feature.game.badges.BadgesRoute
 import io.github.vinaooo.xo.feature.game.scores.ScoresRoute
 import io.github.vinaooo.xo.feature.game.settings.SettingsRoute
 import io.github.vinaooo.xo.feature.game.ui.GameRoute
@@ -31,7 +32,13 @@ data object ScoresDestination
 @Serializable
 data object SettingsDestination
 
-/** The navigation host. Only the game screen carries the ad banner, at its bottom; Scores and Settings have none. */
+@Serializable
+data object BadgesDestination
+
+/**
+ * The navigation host. Only the game screen carries the ad banner, at its bottom; Scores, Badges and Settings have
+ * none.
+ */
 @Composable
 fun OxPlayApp(
     adBanner: AdBannerProvider,
@@ -53,12 +60,14 @@ fun OxPlayApp(
                     GameRoute(
                         onOpenScores = { navController.navigate(ScoresDestination) },
                         onOpenSettings = { navController.navigate(SettingsDestination) },
+                        onOpenBadges = { navController.navigate(BadgesDestination) },
                     )
                 }
                 adBanner.Banner(Modifier.navigationBarsPadding())
             }
         }
         composable<ScoresDestination> { ScoresRoute(onBack = navController::popBackStack) }
+        composable<BadgesDestination> { BadgesRoute(onBack = navController::popBackStack) }
         composable<SettingsDestination> {
             SettingsRoute(
                 onBack = navController::popBackStack,

@@ -10,6 +10,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import io.github.vinaooo.vinkit.achievements.DataStoreAchievementRepository
+import io.github.vinaooo.vinkit.core.AchievementRepository
 import io.github.vinaooo.vinkit.core.AppSettings
 import io.github.vinaooo.vinkit.core.AppSettingsRepository
 import io.github.vinaooo.vinkit.core.StatsRepository
@@ -45,6 +47,11 @@ object DataModule {
     @Singleton
     fun gameSettings(dataStore: DataStore<Preferences>): GameSettingsRepository =
         DataStoreGameSettingsRepository(dataStore)
+
+    @Provides
+    @Singleton
+    fun achievements(dataStore: DataStore<Preferences>): AchievementRepository =
+        DataStoreAchievementRepository(dataStore)
 
     @Provides
     @Singleton

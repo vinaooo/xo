@@ -1,5 +1,7 @@
 package io.github.vinaooo.xo.domain.fake
 
+import io.github.vinaooo.vinkit.core.AchievementProgress
+import io.github.vinaooo.vinkit.core.AchievementRepository
 import io.github.vinaooo.vinkit.core.GameStats
 import io.github.vinaooo.vinkit.core.StatsRepository
 import io.github.vinaooo.xo.domain.repository.GameSettings
@@ -50,4 +52,14 @@ class FakeSeedSource : SeedSource {
     private var next = 0L
 
     override fun nextSeed(): Long = ++next
+}
+
+class FakeAchievementRepository(initial: AchievementProgress = AchievementProgress()) : AchievementRepository {
+    val current = MutableStateFlow(initial)
+
+    override val progress: Flow<AchievementProgress> = current
+
+    override suspend fun update(transform: (AchievementProgress) -> AchievementProgress) {
+        current.value = transform(current.value)
+    }
 }

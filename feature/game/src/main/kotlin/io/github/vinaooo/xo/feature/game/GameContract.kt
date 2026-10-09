@@ -1,6 +1,7 @@
 package io.github.vinaooo.xo.feature.game
 
 import io.github.vinaooo.vinkit.core.AppSettings
+import io.github.vinaooo.xo.domain.model.Achievement
 import io.github.vinaooo.xo.domain.model.GameStatus
 import io.github.vinaooo.xo.domain.model.Mark
 import io.github.vinaooo.xo.domain.session.GameSession
@@ -15,6 +16,8 @@ data class GameUiState(
     val announcement: Announcement? = null,
     /** Counts announcements, so the same one twice in a row is spoken twice. */
     val announcementSequence: Int = 0,
+    /** The badges the game just finished earned, for the end dialog. */
+    val earned: Set<Achievement> = emptySet(),
 ) {
     /** The player may tap the board: a game is on, not over, and it's not the AI's turn. */
     val canPlay: Boolean

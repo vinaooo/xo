@@ -33,4 +33,70 @@
     <string name="opponent_two_player_note">Duas pessoas neste celular, revezando</string>
     <string name="new_game_not_counted">Isto vai começar um novo jogo. O jogo atual será perdido.</string>
     <string name="privacy_policy_url">https://vinaooo.github.io/xo/privacy.html#pt-br</string>
+    <string name="new_badge">Nova medalha: %1$s</string>
+    <plurals name="new_badges">
+        <item quantity="one">%d nova medalha</item>
+        <item quantity="many">%d novas medalhas</item>
+        <item quantity="other">%d novas medalhas</item>
+    </plurals>
+    <plurals name="badge_played_name">
+        <item quantity="one">%d jogo</item>
+        <item quantity="many">%d jogos</item>
+        <item quantity="other">%d jogos</item>
+    </plurals>
+    <plurals name="badge_played_note">
+        <item quantity="one">Termine %d jogo contra a IA</item>
+        <item quantity="many">Termine %d jogos contra a IA</item>
+        <item quantity="other">Termine %d jogos contra a IA</item>
+    </plurals>
+    <plurals name="badge_won_name">
+        <item quantity="one">%d vitória</item>
+        <item quantity="many">%d vitórias</item>
+        <item quantity="other">%d vitórias</item>
+    </plurals>
+    <plurals name="badge_won_note">
+        <item quantity="one">Vença %d jogo contra a IA</item>
+        <item quantity="many">Vença %d jogos contra a IA</item>
+        <item quantity="other">Vença %d jogos contra a IA</item>
+    </plurals>
+    <plurals name="badge_streak_name">
+        <item quantity="one">%d vitória seguida</item>
+        <item quantity="many">%d vitórias seguidas</item>
+        <item quantity="other">%d vitórias seguidas</item>
+    </plurals>
+    <plurals name="badge_streak_note">
+        <item quantity="one">Vença %d jogo seguido no mesmo tabuleiro e oponente</item>
+        <item quantity="many">Vença %d jogos seguidos no mesmo tabuleiro e oponente</item>
+        <item quantity="other">Vença %d jogos seguidos no mesmo tabuleiro e oponente</item>
+    </plurals>
+    <plurals name="badge_days_name">
+        <item quantity="one">%d dia seguido</item>
+        <item quantity="many">%d dias seguidos</item>
+        <item quantity="other">%d dias seguidos</item>
+    </plurals>
+    <plurals name="badge_days_note">
+        <item quantity="one">Jogue contra a IA %d dia seguido</item>
+        <item quantity="many">Jogue contra a IA %d dias seguidos</item>
+        <item quantity="other">Jogue contra a IA %d dias seguidos</item>
+    </plurals>
+    <string name="badge_win_three_name">Vitória no 3×3</string>
+    <string name="badge_win_three_note">Vença um jogo no 3×3</string>
+    <string name="badge_win_four_name">Vitória no 4×4</string>
+    <string name="badge_win_four_note">Vença um jogo no 4×4</string>
+    <string name="badge_win_five_name">Vitória no 5×5</string>
+    <string name="badge_win_five_note">Vença um jogo no 5×5</string>
+    <string name="badge_win_every_size_name">Todos os tabuleiros</string>
+    <string name="badge_win_every_size_note">Vença no 3×3, no 4×4 e no 5×5</string>
+    <string name="badge_beat_hard_name">Difícil vencido</string>
+    <string name="badge_beat_hard_note">Vença o Difícil no 4×4 ou no 5×5</string>
+    <string name="badge_draw_hard_name">De igual para igual</string>
+    <string name="badge_draw_hard_note">Empate com o Difícil no 3×3, onde ele nunca perde</string>
+    <string name="badge_quick_win_name">Direto ao ponto</string>
+    <string name="badge_quick_win_note">Vença o Médio ou o Difícil sem marca sobrando: 3 no 3×3, 4 no 4×4 e no 5×5</string>
+    <string name="badge_win_second_name">Virada</string>
+    <string name="badge_win_second_note">Vença o Médio ou o Difícil num jogo que ele começou</string>
+    <string name="badge_no_hints_name">Por conta própria</string>
+    <string name="badge_no_hints_note">Vença o Médio ou o Difícil sem dica</string>
+    <string name="badge_no_undo_name">Sem voltar atrás</string>
+    <string name="badge_no_undo_note">Vença o Médio ou o Difícil sem desfazer jogadas</string>
 </resources>

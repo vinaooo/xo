@@ -61,6 +61,14 @@ class GameSessionTest {
     }
 
     @Test
+    fun `undos are counted, and redo doesn't take one back`() {
+        val played = session(Opponent.HARD).place(0, 4)
+        played.undosUsed shouldBe 0
+        played.undo()!!.undosUsed shouldBe 1
+        played.undo()!!.redo()!!.undosUsed shouldBe 1
+    }
+
+    @Test
     fun `in progress means moves made and not over`() {
         session(Opponent.EASY).isInProgress shouldBe false
         session(Opponent.EASY).place(4).isInProgress shouldBe true
