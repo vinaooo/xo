@@ -75,7 +75,7 @@ class GameScreenTest {
         show(GameUiState(session = session(GameMode(BoardSize.THREE, Opponent.TWO_PLAYER), 4, 0), hint = 8))
         compose.onNodeWithContentDescription("row 3, column 3, empty, suggested").assertExists()
         compose.onNodeWithContentDescription("Undo").performClick()
-        compose.onNodeWithContentDescription("Play the hint").performClick()
+        compose.onNodeWithContentDescription("Apply the hint").performClick()
         intents shouldBe listOf(GameIntent.Undo, GameIntent.Hint)
     }
 
