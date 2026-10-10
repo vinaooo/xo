@@ -9,6 +9,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.vinaooo.vinkit.achievements.Badge
 import io.github.vinaooo.vinkit.achievements.BadgesScreen
+import io.github.vinaooo.vinkit.achievements.R as AchievementsR
 import io.github.vinaooo.xo.domain.model.Achievement
 import io.github.vinaooo.xo.domain.model.Ladder
 import io.github.vinaooo.xo.feature.game.R
@@ -37,9 +38,9 @@ internal fun badge(achievement: Achievement): Badge {
 }
 
 private val LADDER_TEXT = mapOf(
-    Ladder.PLAYED to (R.plurals.badge_played_name to R.plurals.badge_played_note),
-    Ladder.WON to (R.plurals.badge_won_name to R.plurals.badge_won_note),
-    Ladder.STREAK to (R.plurals.badge_streak_name to R.plurals.badge_streak_note),
+    Ladder.PLAYED to (AchievementsR.plurals.vinkit_badge_played to R.plurals.badge_played_note),
+    Ladder.WON to (AchievementsR.plurals.vinkit_badge_won to R.plurals.badge_won_note),
+    Ladder.STREAK to (AchievementsR.plurals.vinkit_badge_streak to R.plurals.badge_streak_note),
     Ladder.DAYS to (R.plurals.badge_days_name to R.plurals.badge_days_note),
 )
 
@@ -52,6 +53,6 @@ private val BADGE_TEXT = mapOf(
     Achievement.DRAW_HARD to (R.string.badge_draw_hard_name to R.string.badge_draw_hard_note),
     Achievement.QUICK_WIN to (R.string.badge_quick_win_name to R.string.badge_quick_win_note),
     Achievement.WIN_SECOND to (R.string.badge_win_second_name to R.string.badge_win_second_note),
-    Achievement.NO_HINTS to (R.string.badge_no_hints_name to R.string.badge_no_hints_note),
+    Achievement.NO_HINTS to (AchievementsR.string.vinkit_badge_no_hints to R.string.badge_no_hints_note),
     Achievement.NO_UNDO to (R.string.badge_no_undo_name to R.string.badge_no_undo_note),
 )

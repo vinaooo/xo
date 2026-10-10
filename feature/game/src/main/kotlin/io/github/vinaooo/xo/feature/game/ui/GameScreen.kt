@@ -166,7 +166,9 @@ private fun Toolbar(
             ) { onIntent(GameIntent.Hint) },
         ),
         menuOptions = listOf(
-            MenuOption(Icons.Rounded.Replay, stringResource(R.string.new_game)) { onIntent(GameIntent.NewGame) },
+            MenuOption(Icons.Rounded.Replay, stringResource(ShellR.string.vinkit_new_game)) {
+                onIntent(GameIntent.NewGame)
+            },
         ),
         onReportBug = onReportBug,
         vertical = frame.landscape,
@@ -208,8 +210,8 @@ private fun EndDialog(uiState: GameUiState, onNewGame: () -> Unit) {
 @Composable
 private fun earnedText(earned: Set<Achievement>): String? = when (earned.size) {
     0 -> null
-    1 -> stringResource(R.string.new_badge, badge(earned.first()).name)
-    else -> pluralStringResource(R.plurals.new_badges, earned.size, earned.size)
+    1 -> stringResource(BadgesR.string.vinkit_new_badge, badge(earned.first()).name)
+    else -> pluralStringResource(BadgesR.plurals.vinkit_new_badges, earned.size, earned.size)
 }
 
 /** Long enough to see the winning line struck through before the dialog covers the board. */

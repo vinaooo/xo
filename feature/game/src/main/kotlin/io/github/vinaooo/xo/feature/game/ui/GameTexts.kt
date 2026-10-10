@@ -2,6 +2,8 @@ package io.github.vinaooo.xo.feature.game.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import io.github.vinaooo.vinkit.designsystem.R as DesignR
+import io.github.vinaooo.vinkit.shell.R as ShellR
 import io.github.vinaooo.xo.domain.model.BoardSize
 import io.github.vinaooo.xo.domain.model.GameMode
 import io.github.vinaooo.xo.domain.model.GameState
@@ -22,9 +24,9 @@ fun sizeName(size: BoardSize): String = stringResource(R.string.board_size, size
 @Composable
 fun opponentName(opponent: Opponent): String = stringResource(
     when (opponent) {
-        Opponent.EASY -> R.string.opponent_easy
-        Opponent.MEDIUM -> R.string.opponent_medium
-        Opponent.HARD -> R.string.opponent_hard
+        Opponent.EASY -> DesignR.string.vinkit_difficulty_easy
+        Opponent.MEDIUM -> DesignR.string.vinkit_difficulty_medium
+        Opponent.HARD -> DesignR.string.vinkit_difficulty_hard
         Opponent.TWO_PLAYER -> R.string.opponent_two_player
     },
 )
@@ -44,7 +46,7 @@ internal fun turnText(state: GameState, aiThinking: Boolean): String = when (val
 @Composable
 internal fun resultText(status: GameStatus, vsAi: Boolean): String = when {
     status is GameStatus.Won && !vsAi -> stringResource(R.string.mark_wins, markName(status.mark))
-    status is GameStatus.Won && status.mark == GameMode.HUMAN -> stringResource(R.string.you_won)
+    status is GameStatus.Won && status.mark == GameMode.HUMAN -> stringResource(ShellR.string.vinkit_you_won)
     status is GameStatus.Won -> stringResource(R.string.you_lost)
     else -> stringResource(R.string.draw)
 }

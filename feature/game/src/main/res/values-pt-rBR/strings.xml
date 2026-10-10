@@ -1,22 +1,17 @@
 <resources>
     <string name="mode_name">%1$s · %2$s</string>
     <string name="board_size">%1$d×%2$d</string>
-    <string name="opponent_easy">Fácil</string>
-    <string name="opponent_medium">Médio</string>
-    <string name="opponent_hard">Difícil</string>
     <string name="opponent_two_player">2 jogadores</string>
     <string name="mark_x">X</string>
     <string name="mark_o">O</string>
     <string name="your_turn">Sua vez</string>
     <string name="ai_thinking">Pensando…</string>
     <string name="turn_of">Vez do %1$s</string>
-    <string name="you_won">Você venceu!</string>
     <string name="you_lost">Você perdeu</string>
     <string name="draw">Empate</string>
     <string name="mark_wins">%1$s venceu!</string>
     <string name="moves">Jogadas: %1$d</string>
-    <string name="apply_hint">Jogar a dica</string>
-    <string name="new_game">Novo jogo</string>
+    <string name="apply_hint">Aplicar a dica</string>
     <string name="a11y_board">Tabuleiro</string>
     <string name="a11y_cell">linha %1$d, coluna %2$d</string>
     <string name="a11y_empty">vazia</string>
@@ -24,50 +19,28 @@
     <string name="a11y_cell_hinted">%1$s, sugerida</string>
     <string name="a11y_placed">%1$s na %2$s</string>
     <string name="a11y_hinted">Dica: %1$s</string>
-    <string name="section_game">Jogo</string>
     <string name="board">Tabuleiro</string>
     <string name="opponent">Adversário</string>
     <string name="opponent_easy_note">Joga em qualquer casa</string>
     <string name="opponent_medium_note">Ganha e bloqueia quando vê como; senão, fica com o meio</string>
     <string name="opponent_hard_note">Pensa à frente: nunca perde no 3×3</string>
     <string name="opponent_two_player_note">Duas pessoas neste celular, revezando</string>
-    <string name="new_game_not_counted">Isto vai começar um novo jogo. O jogo atual será perdido.</string>
+    <string name="new_game_not_counted">Isso vai começar uma nova partida. A partida atual será perdida.</string>
     <string name="privacy_policy_url">https://vinaooo.github.io/xo/privacy.html#pt-br</string>
-    <string name="new_badge">Nova medalha: %1$s</string>
-    <plurals name="new_badges">
-        <item quantity="one">%d nova medalha</item>
-        <item quantity="many">%d novas medalhas</item>
-        <item quantity="other">%d novas medalhas</item>
-    </plurals>
-    <plurals name="badge_played_name">
-        <item quantity="one">%d jogo</item>
-        <item quantity="many">%d jogos</item>
-        <item quantity="other">%d jogos</item>
-    </plurals>
     <plurals name="badge_played_note">
-        <item quantity="one">Termine %d jogo contra a IA</item>
-        <item quantity="many">Termine %d jogos contra a IA</item>
-        <item quantity="other">Termine %d jogos contra a IA</item>
-    </plurals>
-    <plurals name="badge_won_name">
-        <item quantity="one">%d vitória</item>
-        <item quantity="many">%d vitórias</item>
-        <item quantity="other">%d vitórias</item>
+        <item quantity="one">Termine %d partida contra o celular</item>
+        <item quantity="many">Termine %d partidas contra o celular</item>
+        <item quantity="other">Termine %d partidas contra o celular</item>
     </plurals>
     <plurals name="badge_won_note">
-        <item quantity="one">Vença %d jogo contra a IA</item>
-        <item quantity="many">Vença %d jogos contra a IA</item>
-        <item quantity="other">Vença %d jogos contra a IA</item>
-    </plurals>
-    <plurals name="badge_streak_name">
-        <item quantity="one">%d vitória seguida</item>
-        <item quantity="many">%d vitórias seguidas</item>
-        <item quantity="other">%d vitórias seguidas</item>
+        <item quantity="one">Vença %d partida contra o celular</item>
+        <item quantity="many">Vença %d partidas contra o celular</item>
+        <item quantity="other">Vença %d partidas contra o celular</item>
     </plurals>
     <plurals name="badge_streak_note">
-        <item quantity="one">Vença %d jogo seguido no mesmo tabuleiro e oponente</item>
-        <item quantity="many">Vença %d jogos seguidos no mesmo tabuleiro e oponente</item>
-        <item quantity="other">Vença %d jogos seguidos no mesmo tabuleiro e oponente</item>
+        <item quantity="one">Vença %d partida seguida no mesmo tabuleiro e contra o mesmo adversário</item>
+        <item quantity="many">Vença %d partidas seguidas no mesmo tabuleiro e contra o mesmo adversário</item>
+        <item quantity="other">Vença %d partidas seguidas no mesmo tabuleiro e contra o mesmo adversário</item>
     </plurals>
     <plurals name="badge_days_name">
         <item quantity="one">%d dia seguido</item>
@@ -75,16 +48,16 @@
         <item quantity="other">%d dias seguidos</item>
     </plurals>
     <plurals name="badge_days_note">
-        <item quantity="one">Jogue contra a IA %d dia seguido</item>
-        <item quantity="many">Jogue contra a IA %d dias seguidos</item>
-        <item quantity="other">Jogue contra a IA %d dias seguidos</item>
+        <item quantity="one">Jogue contra o celular %d dia seguido</item>
+        <item quantity="many">Jogue contra o celular %d dias seguidos</item>
+        <item quantity="other">Jogue contra o celular %d dias seguidos</item>
     </plurals>
     <string name="badge_win_three_name">Vitória no 3×3</string>
-    <string name="badge_win_three_note">Vença um jogo no 3×3</string>
+    <string name="badge_win_three_note">Vença uma partida no 3×3</string>
     <string name="badge_win_four_name">Vitória no 4×4</string>
-    <string name="badge_win_four_note">Vença um jogo no 4×4</string>
+    <string name="badge_win_four_note">Vença uma partida no 4×4</string>
     <string name="badge_win_five_name">Vitória no 5×5</string>
-    <string name="badge_win_five_note">Vença um jogo no 5×5</string>
+    <string name="badge_win_five_note">Vença uma partida no 5×5</string>
     <string name="badge_win_every_size_name">Todos os tabuleiros</string>
     <string name="badge_win_every_size_note">Vença no 3×3, no 4×4 e no 5×5</string>
     <string name="badge_beat_hard_name">Difícil vencido</string>
@@ -94,9 +67,8 @@
     <string name="badge_quick_win_name">Direto ao ponto</string>
     <string name="badge_quick_win_note">Vença o Médio ou o Difícil sem marca sobrando: 3 no 3×3, 4 no 4×4 e no 5×5</string>
     <string name="badge_win_second_name">Virada</string>
-    <string name="badge_win_second_note">Vença o Médio ou o Difícil num jogo que ele começou</string>
-    <string name="badge_no_hints_name">Por conta própria</string>
-    <string name="badge_no_hints_note">Vença o Médio ou o Difícil sem dica</string>
-    <string name="badge_no_undo_name">Sem voltar atrás</string>
+    <string name="badge_win_second_note">Vença o Médio ou o Difícil numa partida que ele começou</string>
+    <string name="badge_no_hints_note">Vença o Médio ou o Difícil sem dicas</string>
+    <string name="badge_no_undo_name">Sem desfazer</string>
     <string name="badge_no_undo_note">Vença o Médio ou o Difícil sem desfazer jogadas</string>
 </resources>
