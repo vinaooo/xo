@@ -25,7 +25,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.github.vinaooo.vinkit.achievements.R as BadgesR
+import io.github.vinaooo.vinkit.achievements.R as AchievementsR
 import io.github.vinaooo.vinkit.bugreport.ReportTarget
 import io.github.vinaooo.vinkit.shell.FrameInfo
 import io.github.vinaooo.vinkit.shell.GameFrame
@@ -105,7 +105,7 @@ fun GameScreen(
             onOpenSettings = onOpenSettings,
             navigation = listOfNotNull(
                 onOpenBadges?.let {
-                    NavigationAction(Icons.Rounded.MilitaryTech, stringResource(BadgesR.string.vinkit_badges), it)
+                    NavigationAction(Icons.Rounded.MilitaryTech, stringResource(AchievementsR.string.vinkit_badges), it)
                 },
             ),
         )
@@ -210,8 +210,8 @@ private fun EndDialog(uiState: GameUiState, onNewGame: () -> Unit) {
 @Composable
 private fun earnedText(earned: Set<Achievement>): String? = when (earned.size) {
     0 -> null
-    1 -> stringResource(BadgesR.string.vinkit_new_badge, badge(earned.first()).name)
-    else -> pluralStringResource(BadgesR.plurals.vinkit_new_badges, earned.size, earned.size)
+    1 -> stringResource(AchievementsR.string.vinkit_new_badge, badge(earned.first()).name)
+    else -> pluralStringResource(AchievementsR.plurals.vinkit_new_badges, earned.size, earned.size)
 }
 
 /** Long enough to see the winning line struck through before the dialog covers the board. */
